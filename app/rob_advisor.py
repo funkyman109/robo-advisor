@@ -45,14 +45,21 @@ recent_low = to_usd(min(low_prices))
 #info outputs
 
 csv_file_path = os.path.join(os.path.dirname(__file__), "..", "data", "prices.csv")
+csv_headers = ['timestamp', 'open', 'high', 'low', 'close', 'volume']
 
 with open(csv_file_path, "w") as csv_file: # "w" means "open the file for writing"
-    writer = csv.DictWriter(csv_file, fieldnames=["city", "name"])
+    writer = csv.DictWriter(csv_file, fieldnames=csv_headers)
     writer.writeheader() # uses fieldnames set above
-    writer.writerow({"city": "New York", "name": "Yankees"})
-    writer.writerow({"city": "New York", "name": "Mets"})
-    writer.writerow({"city": "Boston", "name": "Red Sox"})
-    writer.writerow({"city": "New Haven", "name": "Ravens"})
+
+    writer.writerow({
+        "timestamp": "Todo",
+        "open": "Todo",
+        "high": "Todo",
+        "low": "Todo",
+        "close": "Todo",
+        "volume": "Todo",
+    })
+  
 
 
 # app/robo_advisor.py
