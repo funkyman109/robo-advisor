@@ -1,7 +1,10 @@
 #base taken from prof rossetti https://www.youtube.com/watch?v=UXAVOP1oCog
+import csv
+import json
+import os
 
 import requests
-import json
+
 def to_usd(price):
     """
     Converts a numeric value to usd-formatted string, for printing and display purposes.
@@ -41,7 +44,15 @@ recent_low = to_usd(min(low_prices))
 
 #info outputs
 
+csv_file_path = os.path.join(os.path.dirname(__file__), "..", "data", "prices.csv")
 
+with open(csv_file_path, "w") as csv_file: # "w" means "open the file for writing"
+    writer = csv.DictWriter(csv_file, fieldnames=["city", "name"])
+    writer.writeheader() # uses fieldnames set above
+    writer.writerow({"city": "New York", "name": "Yankees"})
+    writer.writerow({"city": "New York", "name": "Mets"})
+    writer.writerow({"city": "Boston", "name": "Red Sox"})
+    writer.writerow({"city": "New Haven", "name": "Ravens"})
 
 
 # app/robo_advisor.py
@@ -60,5 +71,8 @@ print("-------------------------")
 print("RECOMMENDATION: BUY!")
 print("RECOMMENDATION REASON: TODO")
 print("-------------------------")
+print("writing data to csv file:", csv_file_path)
+print("-------------------------")
 print("HAPPY INVESTING!")
 print("-------------------------")
+
