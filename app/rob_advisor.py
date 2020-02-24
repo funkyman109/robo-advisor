@@ -25,8 +25,19 @@ last_refreshed = parsed_response["Meta Data"]["3. Last Refreshed"]
 tsd = parsed_response['Time Series (Daily)']
 dates = list(tsd.keys())
 latest_date = dates[0]
-
 latest_close = to_usd(float(tsd[latest_date]['4. close']))
+
+high_prices = []
+for date in dates:
+    high_price = float(tsd[date]['2. high'])
+    high_prices.append(high_price)
+recent_high = to_usd(max(high_prices))
+
+low_prices = []
+for date in dates:
+    low_price = float(tsd[date]['3. low'])
+    low_prices.append(low_price)
+recent_low = to_usd(min(low_prices))
 
 #info outputs
 
@@ -43,8 +54,8 @@ print("REQUEST AT: 2018-02-20 02:00pm")
 print("-------------------------")
 print("LATEST DAY:", last_refreshed)
 print("LATEST CLOSE:", latest_close)
-print("RECENT HIGH: $101,000.00")
-print("RECENT LOW: $99,000.00")
+print("RECENT HIGH:", recent_high)
+print("RECENT LOW:", recent_low)
 print("-------------------------")
 print("RECOMMENDATION: BUY!")
 print("RECOMMENDATION REASON: TODO")
