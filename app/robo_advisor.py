@@ -3,6 +3,8 @@ import csv
 import json
 import os
 import pandas as pd
+import re
+import sys
 
 from dotenv import load_dotenv
 import requests
@@ -22,7 +24,16 @@ def to_usd(price):
 
 #api_key = os.environ.get("ALPHAVANTAGE_API_KEY")
 api_key = os.getenv("ALPHAVANTAGE_API_KEY", default="OOPS")
-symbol = "MSFT"
+
+#taken from https://stackoverflow.com/questions/8761778/limiting-python-input-strings-to-certain-characters-and-lengths
+symbol = input("Please enter the ticker of your stock of choice: ")
+if not re.match("^[a-z]*$", symbol):
+    print("Error! Only letters a-z allowed!")
+    sys.exit()
+elif len(symbol) > 5:
+    print("Error! Only 5 characters allowed!")
+    sys.exit()
+
 request_url= f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&apikey={api_key}"
 
 response = requests.get(request_url)
@@ -68,9 +79,11 @@ with open(csv_file_path, "w") as csv_file: # "w" means "open the file for writin
         "volume": daily_prices['5. volume'],
     })
 #making recommendation
-#pandas indformation taken from 
-stats = pd.read_csv(csv_file_path)
-print(stats)
+#pandas indformation taken from https://github.com/prof-rossetti/intro-to-python/blob/master/notes/python/packages/pandas.md
+stock_info = pd.read_csv(csv_file_path)
+print(stock_info)
+
+
 
 
 # app/robo_advisor.py
