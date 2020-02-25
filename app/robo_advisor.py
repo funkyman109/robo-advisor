@@ -84,13 +84,13 @@ with open(csv_file_path, "w") as csv_file: # "w" means "open the file for writin
 #making recommendation
 #pandas indformation taken from https://github.com/prof-rossetti/intro-to-python/blob/master/notes/python/packages/pandas.md
 stock_info = pd.read_csv(csv_file_path)
-print(stock_info)
+#print(stock_info)
 
 # retrieving variables from csv
 close = stock_info["close"][0]
 ll = stock_info["low"].min()
 hh = stock_info["high"].max()
-print(close, ll, hh)
+#print(close, ll, hh)
 
 #creating a lower boundary in order to analyze volatility
 #idea taken from summer internship 
