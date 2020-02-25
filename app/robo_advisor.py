@@ -5,6 +5,7 @@ import os
 import pandas as pd
 import re
 import sys
+import datetime
 
 from dotenv import load_dotenv
 import requests
@@ -21,6 +22,8 @@ def to_usd(price):
     """
     return f"${price:,.2f}" #> $12,000.71
 #info inputs
+
+Daytime = datetime.datetime.now()
 
 #api_key = os.environ.get("ALPHAVANTAGE_API_KEY")
 api_key = os.getenv("ALPHAVANTAGE_API_KEY", default="OOPS")
@@ -83,24 +86,41 @@ with open(csv_file_path, "w") as csv_file: # "w" means "open the file for writin
 stock_info = pd.read_csv(csv_file_path)
 print(stock_info)
 
+# retrieving variables from csv
+close = stock_info["close"][0]
+ll = stock_info["low"].min()
+hh = stock_info["high"].max()
+print(close, ll, hh)
 
+#creating a lower boundary in order to analyze volatility
+#idea taken from summer internship 
+
+lower_boundary = close * 0.75
+upper_boundary = close * 1.64
+
+if ll < lower_boundary or hh > upper_boundary:
+    rec = "Don't Buy."
+    reason = "Stock appears to be very volatile. Thus, it is a risk to your portfolio."
+else:
+    rec = "Buy it Baby."
+    reason = "Stock is not volatile and likely to continue on its current trend."
 
 
 # app/robo_advisor.py
 
 print("-------------------------")
-print("SELECTED SYMBOL: XYZ")
+print("SELECTED SYMBOL:", symbol)
 print("-------------------------")
 print("REQUESTING STOCK MARKET DATA...")
-print("REQUEST AT: 2018-02-20 02:00pm")
+print("REQUEST AT:", Daytime)
 print("-------------------------")
 print("LATEST DAY:", last_refreshed)
 print("LATEST CLOSE:", latest_close)
 print("RECENT HIGH:", recent_high)
 print("RECENT LOW:", recent_low)
 print("-------------------------")
-print("RECOMMENDATION: BUY!")
-print("RECOMMENDATION REASON: TODO")
+print("RECOMMENDATION:", rec)
+print("RECOMMENDATION REASON:", reason)
 print("-------------------------")
 print("writing data to csv file:", csv_file_path)
 print("-------------------------")
