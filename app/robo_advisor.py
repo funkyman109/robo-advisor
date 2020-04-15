@@ -21,6 +21,11 @@ def to_usd(price):
     Returns: $4,000.44
     """
     return f"${price:,.2f}" #> $12,000.71
+
+def get_response(symbol, api_key):
+    pull = requests.get(f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&apikey={api_key}")
+    return pull
+
 #info inputs
 
 
@@ -40,9 +45,11 @@ if __name__ == "__main__":
         print("Error! Only 5 characters allowed!")
         sys.exit()
 
-    request_url= f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&apikey={api_key}"
+    #get_response(symbol, api_key)
+    #request_url= f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&apikey={api_key}"
 
-    response = requests.get(request_url)
+    response = get_response(symbol, api_key)
+    #response = requests.get(request_url)
     #print(type(response))
     #print(response.status_code)
     #print(response.text)
