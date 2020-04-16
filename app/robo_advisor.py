@@ -26,6 +26,10 @@ def get_response(symbol, api_key):
     pull = requests.get(f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&apikey={api_key}")
     return pull
 
+def parsed_answer(response):
+    output= response.text
+    parsed_response = json.loads(output)
+    return parsed_response
 #info inputs
 
 
@@ -54,7 +58,8 @@ if __name__ == "__main__":
     #print(response.status_code)
     #print(response.text)
 
-    parsed_response= json.loads(response.text)
+    #parsed_response= json.loads(response.text)
+    parsed_response = parsed_answer(response)
     last_refreshed = parsed_response["Meta Data"]["3. Last Refreshed"]
     tsd = parsed_response['Time Series (Daily)']
     dates = list(tsd.keys())
