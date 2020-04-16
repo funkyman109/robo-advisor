@@ -23,15 +23,24 @@ def to_usd(price):
     return f"${price:,.2f}" #> $12,000.71
 
 def get_response(symbol, api_key):
+    """
+    will pull stock information from api based on ticker symbol
+    """
     pull = requests.get(f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&apikey={api_key}")
     return pull
 
 def parsed_answer(response):
+    """
+    will format requested data in a json loaded format
+    """
     output= response.text
     parsed_response = json.loads(output)
     return parsed_response
 
 def write_csv(csv_file_path, csv_headers):
+   """
+   writes currently existing json data into a csv file to be used later
+   """
     with open(csv_file_path, "w") as csv_file: # "w" means "open the file for writing"
         writer = csv.DictWriter(csv_file, fieldnames=csv_headers)
         writer.writeheader() # uses fieldnames set above
@@ -53,7 +62,6 @@ if __name__ == "__main__":
 
     Daytime = datetime.datetime.now()
 
-    #api_key = os.environ.get("ALPHAVANTAGE_API_KEY")
     api_key = os.getenv("ALPHAVANTAGE_API_KEY", default="OOPS")
 
     #taken from https://stackoverflow.com/questions/8761778/limiting-python-input-strings-to-certain-characters-and-lengths
@@ -65,16 +73,7 @@ if __name__ == "__main__":
         print("Error! Only 5 characters allowed!")
         sys.exit()
 
-    #get_response(symbol, api_key)
-    #request_url= f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={symbol}&apikey={api_key}"
-
     response = get_response(symbol, api_key)
-    #response = requests.get(request_url)
-    #print(type(response))
-    #print(response.status_code)
-    #print(response.text)
-
-    #parsed_response= json.loads(response.text)
     parsed_response = parsed_answer(response)
     last_refreshed = parsed_response["Meta Data"]["3. Last Refreshed"]
     tsd = parsed_response['Time Series (Daily)']
@@ -101,29 +100,17 @@ if __name__ == "__main__":
 
     write_csv(csv_file_path,csv_headers)
 
-    # with open(csv_file_path, "w") as csv_file: # "w" means "open the file for writing"
-    #     writer = csv.DictWriter(csv_file, fieldnames=csv_headers)
-    #     writer.writeheader() # uses fieldnames set above
-    #     for date in dates:
-    #         daily_prices= tsd[date]
-    #         writer.writerow({
-    #             "timestamp": date,
-    #             "open": daily_prices['1. open'],
-    #             "high": daily_prices['2. high'],
-    #             "low": daily_prices['3. low'],
-    #             "close": daily_prices['4. close'],
-    #             "volume": daily_prices['5. volume'],
-    #         })
+
     #making recommendation
     #pandas indformation taken from https://github.com/prof-rossetti/intro-to-python/blob/master/notes/python/packages/pandas.md
     stock_info = pd.read_csv(csv_file_path)
-    #print(stock_info)
+   
 
     # retrieving variables from csv
     close = stock_info["close"][0]
     ll = stock_info["low"].min()
     hh = stock_info["high"].max()
-    #print(close, ll, hh)
+    
 
     #creating a lower boundary in order to analyze volatility
     #idea taken from summer internship 
@@ -139,7 +126,7 @@ if __name__ == "__main__":
         reason = "Stock is not volatile and likely to continue on its current trend."
 
 
-    # app/robo_advisor.py
+  #printing out advice for the app user
 
     print("-------------------------")
     print("SELECTED SYMBOL:", symbol)
