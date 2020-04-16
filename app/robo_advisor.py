@@ -30,6 +30,22 @@ def parsed_answer(response):
     output= response.text
     parsed_response = json.loads(output)
     return parsed_response
+
+def write_csv(csv_file_path, csv_headers):
+    with open(csv_file_path, "w") as csv_file: # "w" means "open the file for writing"
+        writer = csv.DictWriter(csv_file, fieldnames=csv_headers)
+        writer.writeheader() # uses fieldnames set above
+        for date in dates:
+            daily_prices= tsd[date]
+            writer.writerow({
+                "timestamp": date,
+                "open": daily_prices['1. open'],
+                "high": daily_prices['2. high'],
+                "low": daily_prices['3. low'],
+                "close": daily_prices['4. close'],
+                "volume": daily_prices['5. volume'],
+            })
+
 #info inputs
 
 
@@ -83,19 +99,21 @@ if __name__ == "__main__":
     csv_file_path = os.path.join(os.path.dirname(__file__), "..", "data", "prices.csv")
     csv_headers = ['timestamp', 'open', 'high', 'low', 'close', 'volume']
 
-    with open(csv_file_path, "w") as csv_file: # "w" means "open the file for writing"
-        writer = csv.DictWriter(csv_file, fieldnames=csv_headers)
-        writer.writeheader() # uses fieldnames set above
-        for date in dates:
-            daily_prices= tsd[date]
-            writer.writerow({
-                "timestamp": date,
-                "open": daily_prices['1. open'],
-                "high": daily_prices['2. high'],
-                "low": daily_prices['3. low'],
-                "close": daily_prices['4. close'],
-                "volume": daily_prices['5. volume'],
-            })
+    write_csv(csv_file_path,csv_headers)
+
+    # with open(csv_file_path, "w") as csv_file: # "w" means "open the file for writing"
+    #     writer = csv.DictWriter(csv_file, fieldnames=csv_headers)
+    #     writer.writeheader() # uses fieldnames set above
+    #     for date in dates:
+    #         daily_prices= tsd[date]
+    #         writer.writerow({
+    #             "timestamp": date,
+    #             "open": daily_prices['1. open'],
+    #             "high": daily_prices['2. high'],
+    #             "low": daily_prices['3. low'],
+    #             "close": daily_prices['4. close'],
+    #             "volume": daily_prices['5. volume'],
+    #         })
     #making recommendation
     #pandas indformation taken from https://github.com/prof-rossetti/intro-to-python/blob/master/notes/python/packages/pandas.md
     stock_info = pd.read_csv(csv_file_path)
